@@ -1,41 +1,37 @@
-# Project Title
-
-Simple overview of use/purpose.
+ 
+# Degen Token
+Degen Token is a token that can be earned by players in the game and then exchanged the token for rewards in the in-game store.
 
 ## Description
+This is an ERC20 upgrade, which means it has all the functions of the ERC20 and also other functions.
+It is meant to be a gamer token, where players of the game can earn the token, use the token for in-game transaction and also be able to send it to each other. Players can earn token, check their balance, transfer token, and redeem items on the platform witht their token. 
 
-An in-depth paragraph about your project and overview of use.
+Aside from the normal ERC20 functions, it has additional 10 functions:
+
+-playerRegister(string memory _playerName): allows players to register on the platform; without registration, players does not have access to the platform.
+- mint(address _to, uint256 _amount): allows the owner of the contract to mint (_amount) token to player (_to).
+- playerP2PTransfer(address _recipient, uint256 _amount): allows players transfer tokens between themselves.
+- playerCheckTokenBalance(): allows a user (msg.sender) to check his/her token balance in the contract.
+- lockPlayerAccount(address player): allows owner/admin to lock the account of a player that offended or go against the rule of the platform.
+- releasePlayerAccount(address player): allows owner/admin to unlock the account of a player when forgiven.
+- playerBurnsTheirToken(uint256 _amount): allows user (msg.sender) to burn (_amount) token no longer needed.
+- ownerAddGameItem(string calldata _itemName, uint256 _amount): allows owner/admin to add items to the game-store for players to redeem.
+- playerReedemItems(bytes32 _itemId): allows players to redeem items on the platform.
+- getGameItem(bytes32 _itemId): returns an item with item id (_itemId).
 
 ## Getting Started
+```git clone https://github.com/devfola/Meta-Degen.git``` to clone the project. 
+After cloning the github, do the following to get the code running on your computer.
 
-### Installing
-
-* How/where to download your program
-* Any modifications needed to be made to files/folders
-
-### Executing program
-
-* How to run the program
-* Step-by-step bullets
-```
-code blocks for commands
-```
-
-## Help
-
-Any advise for common problems or issues.
-```
-command to run if program contains helper info
-```
+- Inside the project directory, in the terminal type: npm i
+- Open two terminals in your VS code or your preferred IDE
+- In the first terminal type: ```npx hardhat``` compile to compile your contracts
+- In the second terminal type: ```npx hardhat node``` to set up local nodes
+- Go back to the first terminal and type: ```npx hardhat run --network localhost scripts/deploy.js``` to deploy your contract
+- To interact with the functions in the contract, you can create another file in the script folder to write your interaction scripts.
 
 ## Authors
-
-Contributors names and contact info
-
-ex. Dominique Pizzie  
-ex. [@DomPizzie](https://twitter.com/dompizzie)
-
+Warith Adebowale
 
 ## License
-
-This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details
+This project is licensed under the MIT License - see the LICENSE.md file for details
