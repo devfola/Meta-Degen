@@ -1,6 +1,6 @@
  
 # Degen Token
-Degen Token is a token that can be earned by players in the game and then exchanged the token for rewards in the in-game store.
+Degen Token is a token that players in the game can earn and then exchanged the token for rewards in the in-game store.
 
 ## Description
 This is an ERC20 upgrade, which means it has all the functions of the ERC20 and also other functions.
@@ -8,12 +8,12 @@ It is meant to be a gamer token, where players of the game can earn the token, u
 
 Aside from the normal ERC20 functions, it has additional 10 functions:
 
--playerRegister(string memory _playerName): allows players to register on the platform; without registration, players does not have access to the platform.
+- playerRegister(string memory _playerName): allows players to register on the platform; without registration, players cannot access the platform.
 - mint(address _to, uint256 _amount): allows the owner of the contract to mint (_amount) token to player (_to).
 - playerP2PTransfer(address _recipient, uint256 _amount): allows players transfer tokens between themselves.
 - playerCheckTokenBalance(): allows a user (msg.sender) to check his/her token balance in the contract.
 - lockPlayerAccount(address player): allows owner/admin to lock the account of a player that offended or go against the rule of the platform.
-- releasePlayerAccount(address player): allows owner/admin to unlock the account of a player when forgiven.
+- releasePlayerAccount(address player): allows owner/admin to unlock a player's account when forgiven.
 - playerBurnsTheirToken(uint256 _amount): allows user (msg.sender) to burn (_amount) token no longer needed.
 - ownerAddGameItem(string calldata _itemName, uint256 _amount): allows owner/admin to add items to the game-store for players to redeem.
 - playerReedemItems(bytes32 _itemId): allows players to redeem items on the platform.
