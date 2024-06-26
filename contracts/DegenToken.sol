@@ -125,7 +125,7 @@ contract DegenToken is ERC20, Ownable {
         emit TokenBurnt(msg.sender, _amount);
     }
 
-    function OwnerAddGameItem(string calldata _itemName, uint256 _amount)
+    function ownerAddGameItem(string calldata _itemName, uint256 _amount)
         external
         onlyOwner
     {
