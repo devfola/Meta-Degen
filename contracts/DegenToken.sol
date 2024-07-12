@@ -26,36 +26,32 @@ error PLAYER_NOT_REGISTERED();
 error CANNOT_TRANSFER_ADDRESS_ZERO();
 
 contract DegenToken is ERC20, Ownable {
+    GameProp[] public degenProps;
+
     struct Player {
-        address player;
+        address playerAddress;
         string playerName;
         bool isRegistered;
     }
 
-    struct GameItem {
-        string itemName;
-        address owner;
-        bytes32 _itemId;
+    struct GameProp {
+        address currentOwner;
+        bytes32 propId;
+        string propName;
         uint256 amount;
     }
 
-    mapping(address => Player) players;
-    mapping(bytes32 => GameItem) gameItems;
-    mapping(address => mapping(bytes32 => GameItem)) playerItems;
+    mapping(address => Player) public players;
+    mapping(bytes32 => GameProp) public gameProps;
+    mapping(address => mapping(bytes32 => GameProp)) public playerProps;
 
     event PlayerRegisters(address player, bool success);
-
     event PlayerP2P(address sender, address recipient, uint256 amount);
-    event TokenBurnt(address owner, uint256 _amount);
-    event ItemCreated(
-        address owner,
-        string _itemName,
-        bytes32 _itemId,
-        uint256 _amount
-    );
-    event ItemReedemed(address newOwner, bytes32 _itemId, string itemName);
+    event TokenBurnt(address owner, uint256 amount);
+    event propsCreated(address creator, bytes32 propId);
+    event PropRedeemed(address newOwner, bytes32 propId, string propName);
 
-    constructor() ERC20("Degen", "DGN") Ownable() {}
+    constructor() ERC20("Degen", "DGN") Ownable(msg.sender) {}
 
     function addressZeroCheck() private view {
         if (msg.sender == address(0)) revert ZERO_ADDRESS_NOT_ALLOWED();
@@ -66,11 +62,11 @@ contract DegenToken is ERC20, Ownable {
     }
 
     function playerRegister(string memory _playerName) external {
-        if (players[msg.sender].player != address(0))
+        if (players[msg.sender].playerAddress != address(0))
             revert YOU_HAVE_REGISTERED();
 
         Player storage _player = players[msg.sender];
-        _player.player = msg.sender;
+        _player.playerAddress = msg.sender;
         _player.playerName = _playerName;
         _player.isRegistered = true;
 
@@ -125,47 +121,41 @@ contract DegenToken is ERC20, Ownable {
         emit TokenBurnt(msg.sender, _amount);
     }
 
-    function ownerAddGameItem(string calldata _itemName, uint256 _amount)
+    function ownerAddGameProps(string calldata _propName, uint256 _amount)
         external
         onlyOwner
     {
-        bytes32 _itemId = keccak256(abi.encodePacked(_itemName, _amount));
+        bytes32 _propId = keccak256(abi.encodePacked(_propName, _amount));
 
-        GameItem storage _gameStorage = gameItems[_itemId];
-        _gameStorage.owner = address(this);
-        _gameStorage._itemId = _itemId;
-        _gameStorage.itemName = _itemName;
-        _gameStorage.amount = _amount;
+        GameProp storage _gameProp = gameProps[_propId];
+        _gameProp.currentOwner = address(this);
+        _gameProp.propId = _propId;
+        _gameProp.propName = _propName;
+        _gameProp.amount = _amount;
 
-        emit ItemCreated(address(this), _itemName, _itemId, _amount);
+        degenProps.push();
+
+        emit propsCreated(address(this), _propId);
     }
 
-    function playerReedemItems(bytes32 _itemId) external {
+    function playerRedeemProp(bytes32 _propId) external {
         isRegistered();
 
-        GameItem storage _item = gameItems[_itemId];
+        GameProp storage _gameProp = gameProps[_propId];
 
-        uint256 _amount = _item.amount;
+        uint256 _amount = _gameProp.amount;
 
         if (balanceOf(msg.sender) < _amount) revert INSUFFICIENT_BALANCE();
 
         transfer(address(this), _amount);
 
-        _item.owner = msg.sender;
+        _gameProp.currentOwner = msg.sender;
 
-        playerItems[msg.sender][_itemId] = _item;
+        playerProps[msg.sender][_propId] = _gameProp;
 
-        emit ItemReedemed(msg.sender, _itemId, _item.itemName);
-    }
-
-    function getGameItem(bytes32 _itemId)
-        external
-        view
-        returns (GameItem memory _gameItem)
-    {
-        isRegistered();
-        _gameItem = gameItems[_itemId];
+        emit PropRedeemed(msg.sender, _propId, _gameProp.propName);
     }
 }
-
-//0xf9f6b541efe8dd64aef0938436681e680a4a21b21eacee81e7053d9c9c243291
+//0x5f649f8ff0cd9201a37975ebc604b955353474fff3cbecc6dec8308ab68f4e92
+//0x76f5f907b606e4cdc6f91b3d4d30e9590ac243d5e7dbd66fea53666fbc907462
+//0x74df9e1dc16c096da37a8b3924819f887c40cc3da095bc0dd517fb1eda04bf04
